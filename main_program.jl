@@ -22,7 +22,7 @@ function calcular_ybus(lin, nod) # Función para calcular la matriz de admitanci
         n1 = lin.FROM[k] # Nodo de inicio
         n2 = lin.TO[k] # Nodo final
         yL = 1 / (lin.R[k] + lin.X[k] * 1im) # Admitancia de la línea
-        Bs = lin.B[k] * 1im / 2 # Admitancia shunt
+        Bs = lin.B[k] * 1im / 2 # suceptancia shunt
 
         ybus[n1, n1] += yL + Bs # Diagonal
         ybus[n1, n2] -= yL # Fuera
@@ -60,8 +60,8 @@ function calcular_ybus_2(lin, nod) # Función para calcular la matriz de admitan
 
         if tap != 0 # Se detecta si hay un transformador
             yL = 1 / (lin.R[k] + lin.X[k] * 1im) # Admitancia de la línea 
-            Bs = (1 - tap) * yL           # Admitancia shunt del BT
-            Bs2 = (tap^2 - tap) * yL      # Admitancia shunt del AT
+            Bs = (1 - tap) * yL           # Admitancia shunt del AT
+            Bs2 = (tap^2 - tap) * yL      # Admitancia shunt del BT
             
             # Elementos de la matriz Ybus con transformadores
             Ybus[n1, n1] += yL*tap + Bs            # Diagonal 
@@ -108,10 +108,11 @@ function crear_Ykm(lin) # Función para crear la matriz de admitancias
         k = lin.FROM[i] # Nodo de inicio
         m = lin.TO[i] # Nodo final
         Y_km =  1 / (lin.X[i]) # Admitancia de la línea
-        Ykm[k, m] = Ykm[k, m] - Y_km # Fuera
-        Ykm[m, k] = Ykm[m, k] - Y_km # Fuera
-        Ykm[k, k] = Ykm[k, k] + Y_km # Diagonal
-        Ykm[m, m] = Ykm[m, m] + Y_km # Diagonal
+        
+        Ykm[k, m] -= Y_km # Fuera --------> #Ykm[k, m] = Ykm[k, m] - Y_km
+        Ykm[m, k] -= Y_km # Fuera
+        Ykm[k, k] += Y_km # Diagonal
+        Ykm[m, m] += Y_km # Diagonal
     end
     return Ykm # Se retorna la matriz de admitancias
 end
@@ -139,16 +140,16 @@ function flujo_potencia_DC(Ykm, P, num_lin, num_nod, lin) # Funbción para el fl
     nodos = setdiff(1:num_nod, slack) # Nodos sin slack ---------------> #nodos = [i for i in 1:num_nod if i != slack] o #nodos = filter(x -> x != slack, 1:num_nod)
     Ykm1 = Ykm[nodos, nodos] # Matriz de admitancias reducida
     P = P[nodos] # Vector de potencias
-    d = zeros(num_nod) # Vector de voltajes
-    d = Ykm1 \ P # Cálculo de los voltajes
+    v = zeros(num_nod) # Vector de voltajes
+    v = Ykm1 \ P # Cálculo de los voltajes
     pf = zeros(num_lin) # Vector de potencia de flujo en las líneas
-    d = pushfirst!(d, dslack) # Se añade el slack al vector de voltajes --------------------> #d = [dslack; d] 
+    v = pushfirst!(v, dslack) # Se añade el slack al vector de voltajes --------------------> #d = [dslack; d] 
     for i in 1:num_lin # Cálculo de la potencia de flujo en las líneas
         k = lin.FROM[i] # Nodo de inicio
         m = lin.TO[i] # Nodo final
-        pf[i] = (d[k] - d[m]) / lin.X[i] # Potencia de flujo en la línea
+        pf[i] = (v[k] - v[m]) / lin.X[i] # Potencia de flujo en la línea
     end
-    return d, pf # Se retornan los voltajes y las potencias de flujo
+    return v, pf # Se retornan los voltajes y las potencias de flujo
 end
 ##___________________________________________________________________________
 function Contingencia(num_lin, Ykm, P, num_nod, lin) # Función para el análisis de contingencias
@@ -169,7 +170,7 @@ function Contingencia(num_lin, Ykm, P, num_nod, lin) # Función para el análisi
         push!(alm, pf) # Se almacena la potencia de flujo
     end
     # Ranking
-    almrank = []
+    almrank = [] # Almacenamiento de los índices de contingencia
     for k in 1:num_conting # Se recorre cada contingencia
         for i in 1:num_conting # Se recorre cada contingencia
             rank = sqrt((alm[k][i] / pfref[k])^2) # Índice de contingencia
@@ -198,6 +199,7 @@ function main() # Función principal
     P = crear_vector_P(lin, nod) # Crear el vector de potencias
     dref, pfref = flujo_potencia_DC(Ykm, P, num_lin, num_nod, lin) # Flujo de potencia en operación normal
     ybus2 = calcular_ybus_2(lin, nod) # Matriz de admitancias nodales con transformadores
+    #v, pf = flujo_potencia_DC(ybus2, P, num_lin, num_nod, lin) # Flujo de potencia en operación normal
 
 
     pfconting, rank = Contingencia(num_lin, Ykm, P, num_nod, lin) # Flujo de potencia en contingencia
@@ -243,6 +245,10 @@ function main() # Función principal
     println("  ") # Se imprime un espacio en blanco
     println("Los ángulos de voltaje en los nodos son: ", dref)
     println("  ")
+    #println("Los ángulos de voltaje en los nodos son: ", v)
+    #println("  ")
+    #println("Los ángulos de voltaje en los nodos son: ", pf)
+    #println("  ")
     return nothing
 end
 
