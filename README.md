@@ -8,7 +8,7 @@ To clearly appreciate how critical the contingencies are in the system, the cont
 PI = \sqrt{\left(\frac{P_{ij}^{post}}{P_{ij}^{pre}}\right)^2}
 ```
 
-Donde:
+where:
 - **$P_{ij}^{pre}$**: Power flow in line $ij$ before the contingency.
 - **$P_{ij}^{post}$**:  Power flow in line $ij$ after the contingency.
 
