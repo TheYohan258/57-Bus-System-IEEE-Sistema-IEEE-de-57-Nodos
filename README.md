@@ -3,9 +3,10 @@
 The base case to be analyzed is an **IEEE 57-bus system**, which was provided to obtain the **Ybus** matrix, taking into account the transformers in the system. Additionally, a load flow analysis will be performed using the **DC Power Flow method**. Finally, an **N-1 contingency analysis** will be conducted, from which a **Boxplot** will be generated to visualize the data obtained from the contingency analysis.
 
 To clearly appreciate how critical the contingencies are in the system, the contingency index is used to see how affected the system is compared to its base case where no line is removed:
-$$
+```math
+
 PI = \sqrt{\left(\frac{P_{ij}^{post}}{P_{ij}^{pre}}\right)^2}
-$$
+```
 
 Donde:
 - **$P_{ij}^{pre}$**: Power flow in line $ij$ before the contingency.
@@ -32,9 +33,10 @@ It is important to note that, during this analysis, many of the constraints impo
 El caso base que se analizará es un **sistema IEEE de 57 nodos**, el cual fue proporcionado para obtener la matriz **Ybus**, considerando los transformadores presentes en el sistema. Además, se realizará un análisis de flujo de carga utilizando el **método de Flujo DC**. Por último, se llevará a cabo un **análisis de contingencia N-1**, del cual se obtendrá un gráfico de **Boxplot** que permitirá visualizar los datos resultantes del análisis de contingencia.
 
 Para apreciar claramente que tan criticas son las contingencias en el sistema se utiliza el indice de contingencia para ver que tan afectado se ve el sistema respecto a su caso base donde no se saca ninguna linea:
-$$
+```math
+
 PI = \sqrt{\left(\frac{P_{ij}^{post}}{P_{ij}^{pre}}\right)^2}
-$$
+```
 
 Donde:
 - **$P_{ij}^{pre}$**: Potencia en la línea $ij$ antes de la contingencia.
