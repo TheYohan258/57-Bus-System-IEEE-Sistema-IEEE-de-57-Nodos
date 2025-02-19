@@ -2,6 +2,28 @@
 
 The base case to be analyzed is an **IEEE 57-bus system**, which was provided to obtain the **Ybus** matrix, taking into account the transformers in the system. Additionally, a load flow analysis will be performed using the **DC Power Flow method**. Finally, an **N-1 contingency analysis** will be conducted, from which a **Boxplot** will be generated to visualize the data obtained from the contingency analysis.
 
+To clearly appreciate how critical the contingencies are in the system, the contingency index is used to see how affected the system is compared to its base case where no line is removed:
+$$
+PI = \sqrt{\left(\frac{P_{ij}^{post}}{P_{ij}^{pre}}\right)^2}
+$$
+
+Donde:
+- **$P_{ij}^{pre}$**: Power flow in line $ij$ before the contingency.
+- **$P_{ij}^{post}$**:  Power flow in line $ij$ after the contingency.
+
+### Explanation of the Formula
+
+- **PI**: Contingency Index (Power Index). This index measures the impact of a contingency (such as the loss of a line) on the power system.
+- **$P_{ij}^{post}$**: Power flow in line $ij$ after the contingency. That is, the power flowing through line $ij$ after a line has been removed from the system.
+- **$P_{ij}^{pre}$**: Power flow in line $ij$ before the contingency. That is, the power flowing through line $ij$ in the base state of the system, with no lines removed.
+
+### Interpretation of the Contingency Index (PI)
+
+- **PI = 1**: Indicates that the power flow in line $ij$ has not changed due to the contingency. This means that the contingency has not had a significant impact on the power flow in that line.
+- **PI > 1**: Indicates that the power flow in line $ij$ has increased due to the contingency. A higher PI value suggests a greater impact of the contingency on the power flow in that line.
+- **PI < 1**: Indicates that the power flow in line $ij$ has decreased due to the contingency. A lower PI value suggests a lesser impact of the contingency on the power flow in that line.
+
+
 It is important to note that, during this analysis, many of the constraints imposed by a real-world system will not be considered. For example, aspects such as the maximum flow capacity of transmission lines, the maximum generation capacity of generators, the maximum load of transformers, among others, will not be taken into account. This is done to simplify the analysis and focus on the fundamental aspects of the study.
 
 
