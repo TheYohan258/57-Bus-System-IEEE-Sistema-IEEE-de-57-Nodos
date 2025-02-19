@@ -1,7 +1,5 @@
 # 57-Bus System IEEE // Sistema IEEE de 57 Nodos
 
-**Autor: Yohan Andres Valencia**
-
 The base case to be analyzed is an **IEEE 57-bus system**, which was provided to obtain the **Ybus** matrix, taking into account the transformers in the system. Additionally, a load flow analysis will be performed using the **DC Power Flow method**. Finally, an **N-1 contingency analysis** will be conducted, from which a **Boxplot** will be generated to visualize the data obtained from the contingency analysis.
 
 To clearly appreciate how critical the contingencies are in the system, the contingency index is used to see how affected the system is compared to its base case where no line is removed:
@@ -10,7 +8,7 @@ To clearly appreciate how critical the contingencies are in the system, the cont
 PI = \sqrt{\left(\frac{P_{ij}^{post}}{P_{ij}^{pre}}\right)^2}
 ```
 
-where:
+Donde:
 - **$P_{ij}^{pre}$**: Power flow in line $ij$ before the contingency.
 - **$P_{ij}^{post}$**:  Power flow in line $ij$ after the contingency.
 
@@ -35,6 +33,7 @@ It is important to note that, during this analysis, many of the constraints impo
 El caso base que se analizará es un **sistema IEEE de 57 nodos**, el cual fue proporcionado para obtener la matriz **Ybus**, considerando los transformadores presentes en el sistema. Además, se realizará un análisis de flujo de carga utilizando el **método de Flujo DC**. Por último, se llevará a cabo un **análisis de contingencia N-1**, del cual se obtendrá un gráfico de **Boxplot** que permitirá visualizar los datos resultantes del análisis de contingencia.
 
 Para apreciar claramente que tan criticas son las contingencias en el sistema se utiliza el indice de contingencia para ver que tan afectado se ve el sistema respecto a su caso base donde no se saca ninguna linea:
+
 ```math
 
 PI = \sqrt{\left(\frac{P_{ij}^{post}}{P_{ij}^{pre}}\right)^2}
@@ -55,6 +54,8 @@ Donde:
 - **PI = 1**: Indica que la potencia de flujo en la línea $ij$ no ha cambiado debido a la contingencia. Esto significa que la contingencia no ha tenido un impacto significativo en el flujo de potencia en esa línea.
 - **PI > 1**: Indica que la potencia de flujo en la línea $ij$ ha aumentado debido a la contingencia. Un valor mayor de PI sugiere un mayor impacto de la contingencia en el flujo de potencia en esa línea.
 - **PI < 1**: Indica que la potencia de flujo en la línea $ij$ ha disminuido debido a la contingencia. Un valor menor de PI sugiere un menor impacto de la contingencia en el flujo de potencia en esa línea.
+
+Es importante mencionar que, durante este análisis, no se tendrán en cuenta muchas de las restricciones que un sistema real impondría. Por ejemplo, no se considerarán aspectos como la capacidad máxima de flujo en las líneas, la generación máxima de los generadores, la carga máxima de los transformadores, entre otros. Esto se hace con el fin de simplificar el análisis y centrarse en los aspectos fundamentales del estudio.
 
 Es importante mencionar que, durante este análisis, no se tendrán en cuenta muchas de las restricciones que un sistema real impondría. Por ejemplo, no se considerarán aspectos como la capacidad máxima de flujo en las líneas, la generación máxima de los generadores, la carga máxima de los transformadores, entre otros. Esto se hace con el fin de simplificar el análisis y centrarse en los aspectos fundamentales del estudio.
 
@@ -150,7 +151,7 @@ Tabla con las siguientes columnas:
 |      9 |   55 |      0 | 0      | 0.1205 | 0      |      0 |      0 |      0 | 0.94  |        0 |        0 |      0 |      0 |
 
 
-### Datos de nodos `nodes.csv`
+### Dtos de nodos `nodes.csv`
 
 Tabla con las siguientes columnas:
 
@@ -312,6 +313,14 @@ Función principal que coordina la carga de datos, el cálculo de la matriz de a
 
 **Salidas (Outputs):**
 - Ninguna (muestra los resultados en la consola y gráficos).
+
+
+**Graficos obtenidos/Graphics obtains**
+
+___
+![Boxploot](Resultado_contingencias.png)
+___
+
 
 
 **Licencias**
