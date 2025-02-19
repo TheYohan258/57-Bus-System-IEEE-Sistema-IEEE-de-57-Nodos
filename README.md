@@ -1,5 +1,7 @@
 # 57-Bus System IEEE // Sistema IEEE de 57 Nodos
 
+**Autor: Yohan Andres Valencia**
+
 The base case to be analyzed is an **IEEE 57-bus system**, which was provided to obtain the **Ybus** matrix, taking into account the transformers in the system. Additionally, a load flow analysis will be performed using the **DC Power Flow method**. Finally, an **N-1 contingency analysis** will be conducted, from which a **Boxplot** will be generated to visualize the data obtained from the contingency analysis.
 
 To clearly appreciate how critical the contingencies are in the system, the contingency index is used to see how affected the system is compared to its base case where no line is removed:
@@ -148,7 +150,7 @@ Tabla con las siguientes columnas:
 |      9 |   55 |      0 | 0      | 0.1205 | 0      |      0 |      0 |      0 | 0.94  |        0 |        0 |      0 |      0 |
 
 
-### Dtos de nodos `nodes.csv`
+### Datos de nodos `nodes.csv`
 
 Tabla con las siguientes columnas:
 
