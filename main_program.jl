@@ -120,7 +120,7 @@ end
 function crear_vector_P(lin, nod) # Función para crear el vector de potencias
     num_nod = nrow(nod) # Número de nodos ------> num_nod = maximum(vcat(lin.From, lin.To)) # Número de nodos 
     P = zeros(num_nod) # Vector de potencias
-    Sbase = 100 # Potencia base Mva
+    Sbase = 1 # Potencia base Mva
     for i in 1:num_nod # Se recorre cada nodo
         Pd = nod.PLOAD[i] # Carga
         Pg = nod.PGEN[i] # Generación
@@ -133,10 +133,6 @@ end
 function flujo_potencia_DC(Ykm, P, num_lin, num_nod, lin) # Funbción para el flujo de potencia
     slack = findfirst(nod.ANG .== 0) # Nodo slack -------------> #slack = 1 # Nodo slack
     dslack = 0 # Voltaje en el nodo slack
-    num_lin = num_lin # Número de líneas
-    num_nod = num_nod # Número de nodos
-    Ykm = Ykm # Matriz de admitancias
-    P = P # Vector de potencias
     nodos = setdiff(1:num_nod, slack) # Nodos sin slack ---------------> #nodos = [i for i in 1:num_nod if i != slack] o #nodos = filter(x -> x != slack, 1:num_nod)
     Ykm1 = Ykm[nodos, nodos] # Matriz de admitancias reducida
     P = P[nodos] # Vector de potencias
@@ -152,21 +148,31 @@ function flujo_potencia_DC(Ykm, P, num_lin, num_nod, lin) # Funbción para el fl
     return v, pf # Se retornan los voltajes y las potencias de flujo
 end
 ##___________________________________________________________________________
+
 function Contingencia(num_lin, Ykm, P, num_nod, lin) # Función para el análisis de contingencias
     num_conting = num_lin # Número de contingencias
+    #ykm_red = crear_Ykm_reducida(Ykm, slack) # Matriz de admitancias reducida
     Ykm1 = crear_Ykm(lin) # Matriz de admitancias
-    P = P # Vector de potencias
-    alm = zeros(num_conting, num_lin) # Almacenamiento de las potencias de flujo
-    
+    alm = zeros(num_conting, num_lin) # Almacenamiento de las potencias de flujo 
+    #dref, pfref = flujo_potencia_DC(Ykm_reducida, P_reducida, num_lin, num_nod, lin) # Flujo de potencia en operación normal  
     dref, pfref = flujo_potencia_DC(Ykm, P, num_lin, num_nod, lin) # Flujo de potencia en operación normal
     alm = [] # Almacenamiento de las potencias de flujo
-
     for j in 1:num_conting # Se recorre cada contingencia
         k = lin.FROM[j]  # Nodo de inicio
         m = lin.TO[j] # Nodo final
+
+        for i in 1:num_lin # Se recorre cada línea
+            k = lin.FROM[i] # Nodo de inicio
+            m = lin.TO[i] # Nodo final
+            Y_km =  1 / (lin.X[i]) # Admitancia de la línea
+
+        Ykm1[k, k] -= Y_km 
+        Ykm1[m, m] -= Y_km
         Ykm1[k, m] = 0 # Se elimina la línea
         Ykm1[m, k] = 0 # Se elimina la línea
-        df, pf = flujo_potencia_DC(Ykm1, P, num_lin, num_nod, lin) # Flujo de potencia en contingencia
+
+        end
+        df, pf = flujo_potencia_DC(Ykm, P, num_lin, num_nod, lin) # Flujo de potencia en contingencia
         push!(alm, pf) # Se almacena la potencia de flujo
     end
     # Ranking
@@ -180,7 +186,6 @@ function Contingencia(num_lin, Ykm, P, num_nod, lin) # Función para el análisi
     for i in 1:num_conting # Se recorre cada contingencia
         almrank[i] = almrank[(i - 1) * num_conting + 1:i * num_conting] # Se descompone el vector
     end
-
     return alm, almrank 
 end
 ##___________________________________________________________________________
@@ -199,8 +204,6 @@ function main() # Función principal
     P = crear_vector_P(lin, nod) # Crear el vector de potencias
     dref, pfref = flujo_potencia_DC(Ykm, P, num_lin, num_nod, lin) # Flujo de potencia en operación normal
     ybus2 = calcular_ybus_2(lin, nod) # Matriz de admitancias nodales con transformadores
-    #v, pf = flujo_potencia_DC(ybus2, P, num_lin, num_nod, lin) # Flujo de potencia en operación normal
-
 
     pfconting, rank = Contingencia(num_lin, Ykm, P, num_nod, lin) # Flujo de potencia en contingencia
     println("  ") # Se imprime un espacio en blanco
@@ -245,10 +248,6 @@ function main() # Función principal
     println("  ") # Se imprime un espacio en blanco
     println("Los ángulos de voltaje en los nodos son: ", dref)
     println("  ")
-    #println("Los ángulos de voltaje en los nodos son: ", v)
-    #println("  ")
-    #println("Los ángulos de voltaje en los nodos son: ", pf)
-    #println("  ")
     return nothing
 end
 
