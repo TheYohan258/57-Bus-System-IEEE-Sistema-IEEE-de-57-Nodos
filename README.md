@@ -60,7 +60,7 @@ Es importante mencionar que, durante este análisis, no se tendrán en cuenta mu
 Es importante mencionar que, durante este análisis, no se tendrán en cuenta muchas de las restricciones que un sistema real impondría. Por ejemplo, no se considerarán aspectos como la capacidad máxima de flujo en las líneas, la generación máxima de los generadores, la carga máxima de los transformadores, entre otros. Esto se hace con el fin de simplificar el análisis y centrarse en los aspectos fundamentales del estudio.
 
 ___
-![Diagrama unifilar](unifilar.png)
+![Diagrama unifilar](Unifilar.png)
 ___
 
 ## Archivos de Entrada
